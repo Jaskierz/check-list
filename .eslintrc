@@ -42,24 +42,49 @@
   ],
   "root": true,
   "rules": {
-    "@typescript-eslint/array-type": ["error", {"default": "generic", "readonly": "generic"}],
+    "@typescript-eslint/array-type": [
+      "error",
+      {
+        "default": "generic",
+        "readonly": "generic"
+      }
+    ],
     "@typescript-eslint/await-thenable": "error",
     "@typescript-eslint/explicit-function-return-type": "error",
-    "@typescript-eslint/interface-name-prefix": ["warn", {"prefixWithI": "always"}],
+    "@typescript-eslint/interface-name-prefix": [
+      "warn",
+      {
+        "prefixWithI": "always"
+      }
+    ],
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/no-for-in-array": "error",
-    "@typescript-eslint/no-unused-vars": ["error", {"argsIgnorePattern": "^_"}],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
     "@typescript-eslint/prefer-for-of": "error",
     "@typescript-eslint/prefer-readonly": "error",
     "@typescript-eslint/promise-function-async": "error",
-    "arrow-parens": ["error", "as-needed"],
+    "arrow-parens": [
+      "error",
+      "as-needed"
+    ],
     "functional/functional-parameters": "off",
     "functional/no-class": "off",
     "functional/no-conditional-statement": "off",
     "functional/no-expression-statement": "off",
     "functional/prefer-type-literal": "off",
-    "jsx-quotes": ["error", "prefer-double"],
-    "linebreak-style": ["error", "unix"],
+    "jsx-quotes": [
+      "error",
+      "prefer-double"
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
     "newline-before-return": "error",
     "no-console": "warn",
     "no-delete-var": "error",
@@ -72,13 +97,38 @@
     "prefer-const": "error",
     "prefer-object-spread": "error",
     "prefer-template": "error",
-    "prettier/prettier": ["error", {"singleQuote": true, "trailingComma": "all"}],
-    "quotes": ["error", "single"],
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": true,
+        "trailingComma": "all"
+      }
+    ],
+    "quotes": [
+      "error",
+      "single"
+    ],
     "react/no-danger": "error",
     "require-await": "error",
-    "semi": ["error", "always"],
-    "sort-imports": ["error", {"ignoreDeclarationSort": true}],
-    "sort-keys": ["error", "asc", {"caseSensitive": true, "natural": false, "minKeys": 2}],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "sort-imports": [
+      "error",
+      {
+        "ignoreDeclarationSort": true
+      }
+    ],
+    "sort-keys": [
+      "error",
+      "asc",
+      {
+        "caseSensitive": true,
+        "natural": false,
+        "minKeys": 2
+      }
+    ],
     "use-isnan": "error"
   },
   "settings": {
