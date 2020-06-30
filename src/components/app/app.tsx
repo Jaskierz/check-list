@@ -1,6 +1,6 @@
-import React, {Fragment, ReactElement, useEffect, useState} from "react";
+import React, {ReactElement, useEffect, useState} from "react";
 import {CheckboxList} from "../checkboxList";
-import styled from "styled-components";
+import styled, {keyframes} from "styled-components";
 import {OverlayScrollbarsComponent} from "overlayscrollbars-react";
 import axios, {AxiosResponse} from "axios";
 import {Checkbox} from "../checkbox";
@@ -21,8 +21,15 @@ const StyledContainer = styled.div`
   }
 `;
 
+const moveHeader = keyframes`
+    to {
+        margin: 30px 22px 20px;
+    }
+`;
+
 const StyledHeader = styled.h1`
   margin: 136px 22px 20px;
+  animation: 1s ${moveHeader} 2s forwards;
 `;
 
 const StyledParagraph = styled.p`
@@ -40,8 +47,30 @@ const ProgressBarEmpty = styled.div`
   background: #e5e5e5;
 `;
 
+const fillProgress = keyframes`
+    0% {
+        width: 0%;
+    }
+    100%{
+        width: 100%;
+    }
+`;
+
+const hideProgressContainer = keyframes`
+    to {
+        height: 0;
+        opacity: 0;
+        display: none;
+    }
+`;
+
+const ProgressContainer = styled.div`
+    height: 100%;
+    animation: 2s ${hideProgressContainer} 1s forwards;
+`;
+
 const ProgressBarContent = styled.div`
-  width: 40%;
+  animation: 2s ${fillProgress} ease-out;
   background: #ff4a55;
   border-radius: 4px;
   height: 4px;
@@ -53,8 +82,16 @@ const StyledList = styled.div`
   padding: 4px 36px 4px 23px;
 `;
 
+const showStyledFooter = keyframes`
+    to {
+        opacity: 1;
+    }
+`;
+
 const StyledFooter = styled.div`
   height: 75px;
+  opacity: 0;
+  animation: 2s ${showStyledFooter} 3s forwards;
   display: flex;
   padding: 0 22px;
   align-items: center;
@@ -67,6 +104,20 @@ const StyledButton = styled.a`
   color: #ffffff;
   font-weight: bold;
   padding: 8px 28px;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: #FF858C;
+  }
+  
+  &:active {
+    background-color: #282828;
+  }
+  
+  &:focus {
+    background-color: #E5E5E5;
+    color: #282828;
+  }
 `;
 
 const Card = styled.div`
@@ -150,45 +201,36 @@ export function App(): ReactElement {
         departmentsLength === departments.length ? setSelectedAll(true) : setSelectedAll(false);
     };
 
-    // const LoadingPage: React.FC = () => {
-    //     return (
-    //         <Fragment>
-    //             <StyledParagraph>
-    //                 We are gathering available privacy settings...
-    //             </StyledParagraph>
-    //             <ProgressBarContainer>
-    //                 <ProgressBarEmpty>
-    //                     <ProgressBarContent/>
-    //                 </ProgressBarEmpty>
-    //             </ProgressBarContainer>
-    //         </Fragment>
-    //     );
-    // };
-
     return (
         <StyledContainer>
             <StyledHeader>
                 Hey, take a moment to <b>adjust your privacy settings</b>
             </StyledHeader>
-            {/*<LoadingPage/>*/}
-            {/*<DefaultPage/>*/}
-            <Fragment>
-                <OverlayScrollbarsComponent style={{flexGrow: 1}}>
-                    <StyledList>
-                        {companies.map(company => {
-                            const items = company.departments.map(item => ({id: item.code, label: item.label}));
-                            return <Card key={company.id}>
-                                <h3>{company.name}</h3>
-                                <CheckboxList items={items} value={departments} onChange={onValueChange}/>
-                            </Card>
-                        })}
-                    </StyledList>
-                </OverlayScrollbarsComponent>
-                <StyledFooter>
-                    <Checkbox label={'Select all'} value={selectedAll} onChange={selectAll}/>
-                    <StyledButton onClick={saveData}>Confirm</StyledButton>
-                </StyledFooter>
-            </Fragment>
+            <ProgressContainer>
+                <StyledParagraph>
+                    We are gathering available privacy settings...
+                </StyledParagraph>
+                <ProgressBarContainer>
+                    <ProgressBarEmpty>
+                        <ProgressBarContent/>
+                    </ProgressBarEmpty>
+                </ProgressBarContainer>
+            </ProgressContainer>
+            <OverlayScrollbarsComponent style={{flexGrow: 1}}>
+                <StyledList>
+                    {companies.map(company => {
+                        const items = company.departments.map(item => ({id: item.code, label: item.label}));
+                        return <Card key={company.id}>
+                            <h3>{company.name}</h3>
+                            <CheckboxList items={items} value={departments} onChange={onValueChange}/>
+                        </Card>
+                    })}
+                </StyledList>
+            </OverlayScrollbarsComponent>
+            <StyledFooter>
+                <Checkbox label={'Select all'} value={selectedAll} onChange={selectAll}/>
+                <StyledButton onClick={saveData}>Confirm</StyledButton>
+            </StyledFooter>
         </StyledContainer>
     );
 }
