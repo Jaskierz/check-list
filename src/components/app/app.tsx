@@ -1,9 +1,9 @@
-import React, {ReactElement, useEffect, useState} from "react";
-import {CheckboxList} from "../checkboxList";
-import styled, {keyframes} from "styled-components";
-import {OverlayScrollbarsComponent} from "overlayscrollbars-react";
-import axios, {AxiosResponse} from "axios";
-import {Checkbox} from "../checkbox";
+import React, { ReactElement, useEffect, useState } from "react";
+import { CheckboxList } from "../checkboxList";
+import styled, { keyframes } from "styled-components";
+import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
+import axios, { AxiosResponse } from "axios";
+import { Checkbox } from "../checkbox";
 
 const StyledContainer = styled.div`
   background-color: #ffffff;
@@ -65,8 +65,8 @@ const hideProgressContainer = keyframes`
 `;
 
 const ProgressContainer = styled.div`
-    height: 100%;
-    animation: 2s ${hideProgressContainer} 1s forwards;
+  height: 100%;
+  animation: 2s ${hideProgressContainer} 1s forwards;
 `;
 
 const ProgressBarContent = styled.div`
@@ -105,17 +105,17 @@ const StyledButton = styled.a`
   font-weight: bold;
   padding: 8px 28px;
   cursor: pointer;
-  
+
   &:hover {
-    background-color: #FF858C;
+    background-color: #ff858c;
   }
-  
+
   &:active {
     background-color: #282828;
   }
-  
+
   &:focus {
-    background-color: #E5E5E5;
+    background-color: #e5e5e5;
     color: #282828;
   }
 `;
@@ -129,108 +129,124 @@ const Card = styled.div`
 `;
 
 interface Company {
-    id: number;
-    uuid: number;
-    name: string;
-    group: number;
-    description: string;
-    departments: {
-        label: string;
-        code: string;
-        required: boolean;
-    }[];
+  id: number;
+  uuid: number;
+  name: string;
+  group: number;
+  description: string;
+  departments: {
+    label: string;
+    code: string;
+    required: boolean;
+  }[];
 }
 
 export function App(): ReactElement {
-    const [companies, setCompanies] = useState<Company[]>([]);
-    const [departments, setDepartments] = useState<string[]>([]);
-    const [selectedAll, setSelectedAll] = useState<boolean>(false);
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [departments, setDepartments] = useState<string[]>([]);
+  const [selectedAll, setSelectedAll] = useState<boolean>(false);
 
-    useEffect(() => {
-        axios.get('http://localhost:3000/companies')
-            .then(function (response: AxiosResponse) {
-                setCompanies(response.data);
-            });
-    }, []);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/companies")
+      .then(function(response: AxiosResponse) {
+        setCompanies(response.data);
+      });
+  }, []);
 
-    useEffect(() => {
-        if (localStorage.getItem('data')) {
-            setDepartments(JSON.parse(localStorage.getItem('data') || '{}'));
-        }
-    }, []);
+  useEffect(() => {
+    if (localStorage.getItem("data")) {
+      setDepartments(JSON.parse(localStorage.getItem("data") || "{}"));
+    }
+  }, []);
 
-    useEffect(() => {
-        checkAllSelected();
-    });
+  useEffect(() => {
+    checkAllSelected();
+  });
 
-    const onValueChange = (v: string[]) => {
-        setDepartments([...v]);
-    };
+  const onValueChange = (v: string[]) => {
+    setDepartments([...v]);
+  };
 
-    const saveData = () => {
-        localStorage.setItem('data', JSON.stringify(departments));
-    };
+  const saveData = () => {
+    localStorage.setItem("data", JSON.stringify(departments));
+  };
 
-    const selectAll = () => {
-        let departmentsLength = getDepartmentsLength();
-        if (departments.length === departmentsLength) {
-            setDepartments([]);
-            setSelectedAll(false);
-        } else {
-            const departments = [''];
-            companies.map(company => {
-                company.departments.map(department => {
-                    departments.push(department.code);
-                })
-            });
-            setDepartments(departments);
-            setSelectedAll(true);
-        }
-    };
-
-    const getDepartmentsLength = () => {
-        let departmentsLength = 1;
-        companies.map(company => {
-            departmentsLength = company.departments.length + departmentsLength;
+  const selectAll = () => {
+    const departmentsLength = getDepartmentsLength();
+    if (departments.length === departmentsLength) {
+      setDepartments([]);
+      setSelectedAll(false);
+    } else {
+      const departments = [""];
+      companies.map(company => {
+        company.departments.map(department => {
+          departments.push(department.code);
         });
-        return departmentsLength;
-    };
+      });
+      setDepartments(departments);
+      setSelectedAll(true);
+    }
+  };
 
-    const checkAllSelected = () => {
-        let departmentsLength = getDepartmentsLength();
-        departmentsLength === departments.length ? setSelectedAll(true) : setSelectedAll(false);
-    };
+  const getDepartmentsLength = () => {
+    let departmentsLength = 1;
+    companies.map(company => {
+      departmentsLength = company.departments.length + departmentsLength;
+    });
+    return departmentsLength;
+  };
 
-    return (
-        <StyledContainer>
-            <StyledHeader>
-                Hey, take a moment to <b>adjust your privacy settings</b>
-            </StyledHeader>
-            <ProgressContainer>
-                <StyledParagraph>
-                    We are gathering available privacy settings...
-                </StyledParagraph>
-                <ProgressBarContainer>
-                    <ProgressBarEmpty>
-                        <ProgressBarContent/>
-                    </ProgressBarEmpty>
-                </ProgressBarContainer>
-            </ProgressContainer>
-            <OverlayScrollbarsComponent style={{flexGrow: 1}}>
-                <StyledList>
-                    {companies.map(company => {
-                        const items = company.departments.map(item => ({id: item.code, label: item.label}));
-                        return <Card key={company.id}>
-                            <h3>{company.name}</h3>
-                            <CheckboxList items={items} value={departments} onChange={onValueChange}/>
-                        </Card>
-                    })}
-                </StyledList>
-            </OverlayScrollbarsComponent>
-            <StyledFooter>
-                <Checkbox label={'Select all'} value={selectedAll} onChange={selectAll}/>
-                <StyledButton onClick={saveData}>Confirm</StyledButton>
-            </StyledFooter>
-        </StyledContainer>
-    );
+  const checkAllSelected = () => {
+    let departmentsLength = getDepartmentsLength();
+    departmentsLength === departments.length
+      ? setSelectedAll(true)
+      : setSelectedAll(false);
+  };
+
+  return (
+    <StyledContainer>
+      <StyledHeader>
+        Hey, take a moment to <b>adjust your privacy settings</b>
+      </StyledHeader>
+      <ProgressContainer>
+        <StyledParagraph>
+          We are gathering available privacy settings...
+        </StyledParagraph>
+        <ProgressBarContainer>
+          <ProgressBarEmpty>
+            <ProgressBarContent />
+          </ProgressBarEmpty>
+        </ProgressBarContainer>
+      </ProgressContainer>
+      <OverlayScrollbarsComponent style={{ flexGrow: 1 }}>
+        <StyledList>
+          {companies.map(company => {
+            const items = company.departments.map(item => ({
+              id: item.code,
+              label: item.label
+            }));
+            return (
+              <Card key={company.id}>
+                <h3>{company.name}</h3>
+                <CheckboxList
+                  items={items}
+                  value={departments}
+                  onChange={onValueChange}
+                />
+              </Card>
+            );
+          })}
+        </StyledList>
+      </OverlayScrollbarsComponent>
+      <StyledFooter>
+        <Checkbox
+          label={"Select all"}
+          value={selectedAll}
+          onChange={selectAll}
+        />
+        <StyledButton onClick={saveData}>Confirm</StyledButton>
+      </StyledFooter>
+    </StyledContainer>
+  );
 }
