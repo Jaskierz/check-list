@@ -1,26 +1,34 @@
-import React, {ReactElement} from "react";
+import React, {ReactElement, ReactNode, Fragment} from "react";
 import {Checkbox} from "../checkbox";
 import styled from "styled-components";
-
-const Card = styled.div`
-  background: #ffffff;
-  box-shadow: 0px 10px 16px rgba(0, 0, 0, 0.05);
-  border-radius: 8px;
-  padding: 13px 17px;
-  margin: 14px 0;
-`;
 
 const CheckboxContainer = styled.div`
   margin-top: 20px;
 `;
 
-export function CheckboxList(): ReactElement {
+interface CheckboxListProps {
+    items: {
+        id: string;
+        label: ReactNode;
+    }[];
+    value: string[];
+    onChange: (v: string[]) => void;
+}
+
+export function CheckboxList(props: CheckboxListProps): ReactElement {
+
     return (
-        <Card>
-            <h3>Simonis-Fisher</h3>
-            <CheckboxContainer>
-                <Checkbox/>
-            </CheckboxContainer>
-        </Card>
-    );
+        <Fragment>
+            {props.items.map((item: { id: string, label: ReactNode }) => {
+                const getCheckboxValue = (v: boolean) => {
+                    const values = props.value;
+                    const index = values.indexOf(item.id);
+                    v ? values.push(item.id) : values.splice(index, 1);
+                    return props.onChange(values);
+                };
+                return <CheckboxContainer key={item.id}>
+                    <Checkbox label={item.label} value={props.value.includes(item.id)} onChange={getCheckboxValue}/>
+                </CheckboxContainer>
+            })}
+        </Fragment>);
 }
